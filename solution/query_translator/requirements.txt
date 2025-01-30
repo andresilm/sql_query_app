@@ -1,0 +1,8 @@
+fastapi
+uvicon
+transformers>=4.25.0
+bitsandbytes>=0.45
+torch @ https://download.pytorch.org/whl/cu126/torch-2.6.0%2Bcu126-cp312-cp312-win_amd64.whl
+accelerate>=0.26.0
+sentencepiece
+sqlparse

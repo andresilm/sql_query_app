@@ -1,0 +1,5 @@
+fastapi
+uvicon
+sqlalchemy
+pymysql
+requests
