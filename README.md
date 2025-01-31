@@ -8,9 +8,9 @@ The project is composed of three main services, orchestrated using Docker Compos
 
 ```
 project_root/
-│-- query_translator/    # Query translation service (ML-based, uses GPU)
-│-- backend/             # FastAPI backend service
-│-- docker-compose.yml   # Docker Compose configuration file
+│-- query_translator/    # Natural language to SQL translation service (optional:GPU)
+│-- backend/             # Main backend service
+│-- docker-compose.yml   
 ```
 
 ### Docker Compose Structure:
