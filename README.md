@@ -19,7 +19,6 @@ project_root/
   - Machine learning service for query translation
   - Uses **NVIDIA GPU** for acceleration
   - Exposes port **5000**
-  - Connected to the **mynetwork** Docker network
 
 - **mysql**
   - MySQL **8.0** database service
@@ -43,7 +42,10 @@ docker compose up --build
 ### Expected Output on Success:
 - Containers for **query_translator**, **mysql**, and **backend** should start
 - No errors should be displayed in the logs
-- Running `docker ps` should show all services running
+
+  Run
+  `docker ps`
+  to show all services running
 
 ## 3. Use
 
