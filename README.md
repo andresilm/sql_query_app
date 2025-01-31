@@ -4,7 +4,7 @@
 
 The project is composed of three main services, orchestrated using Docker Compose:
 
-### Services Overview:
+### Services Overview
 
 ```
 project_root/
@@ -12,8 +12,6 @@ project_root/
 │-- backend/             # Main backend service
 │-- docker-compose.yml   
 ```
-
-### Docker Compose Structure:
 
 - **query_translator**
   - Machine learning service for query translation
@@ -41,7 +39,6 @@ To build and start the project, run:
 docker compose up --build
 ```
 
-### Expected Output on Success:
 - Containers for **query_translator**, **mysql**, and **backend** should start
 - No errors should be displayed in the logs
 
