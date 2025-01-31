@@ -8,7 +8,7 @@ The project is composed of three main services, orchestrated using Docker Compos
 
 ```
 project_root/
-│-- query_translator/    # Natural language to SQL translation service (optional:GPU)
+│-- query_translator/    # Natural language to SQL translation service (LLM based)
 │-- backend/             # Main backend service
 │-- docker-compose.yml   
 ```
@@ -17,7 +17,9 @@ project_root/
 
 - **query_translator**
   - Machine learning service for query translation
-  - Uses **NVIDIA GPU** for acceleration
+  - LLM Model:
+    - **sqlcoder-7b-2** when NVIDIA GPU and CUDA are available
+    - **t5-small-awesome-text-to-sql** otherwise
   - Exposes port **5000**
 
 - **mysql**
