@@ -1,7 +1,6 @@
 ## Installation
-# Project README
 
-## 1. Project Organization
+## 1. Structure
 
 The project is composed of three main services, orchestrated using Docker Compose:
 
@@ -24,7 +23,6 @@ project_root/
 
 - **mysql**
   - MySQL **8.0** database service
-  - Stores the application's structured data
   - Exposes port **3306**
   - Uses a **persistent volume** (`mysql_data`) to store data
 
@@ -33,7 +31,6 @@ project_root/
   - Exposes port **5001**
   - Uses environment variables to connect to the database and query translator
   - Provides a **Swagger UI** for API interaction
-  - Depends on `mysql` and `query_translator`, ensuring they start first
 
 ## 2. Build and Run
 
