@@ -1,5 +1,7 @@
 fastapi
-uvicon
+uvicorn
 sqlalchemy
 pymysql
+mysql-connector-python
+aiomysql
 requests

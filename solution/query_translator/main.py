@@ -1,6 +1,12 @@
-from fastapi import FastAPI, HTTPException
+import uvicorn
+from fastapi import HTTPException, FastAPI
 from pydantic import BaseModel
-from ..query_translator import translate_to_sql
+from .query_translator import translate_to_sql
+import logging
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG)
+
 app = FastAPI()
 
 class QueryRequest(BaseModel):
@@ -15,3 +21,6 @@ async def translate_query(request: QueryRequest):
     translated_query = translate_to_sql(request.query, request.schema)
     return {"sql_query": translated_query}
 
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=5000)

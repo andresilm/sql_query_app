@@ -1,12 +1,16 @@
 import torch
 from transformers import AutoTokenizer, T5Tokenizer, AutoModelForCausalLM, T5ForConditionalGeneration
 import sqlparse
+import logging
 
+logger = logging.getLogger(__name__)
 
 def get_model():
     if torch.cuda.is_available():
+        logger.debug('Will load LLM model %s', "defog/sqlcoder-7b-2")
         model = get_sqlcoder()
     else:
+        logger.debug('Will load LLM model %s', "cssupport/t5-small-awesome-text-to-sql")
         model = get_t5_small()
 
     return model
@@ -100,9 +104,14 @@ where
     return generated_sql
 
 def translate_to_sql(query: str, schema: str):
+    logger.debug('Predicting...')
+    result = None
     if model_type == "sqlcoder":
-        return generate_query_sqlcoder(model, tokenizer, query, schema)
+        result = generate_query_sqlcoder(model, tokenizer, query, schema)
     elif  model_type == "t5":
-        return generate_query_t5(device, model, tokenizer, query, schema)
+        logger.info('Loaded LLM model %s', model_type)
+        result = generate_query_t5(device, model, tokenizer, query, schema)
     else:
         raise ValueError('Invalid model type %s', model_type)
+    logger.debug('Finished predicting')
+    return result

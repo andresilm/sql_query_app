@@ -9,9 +9,11 @@ CSV_FILE = 'data/data.csv'
 
 USER = os.getenv('MYSQL_USER')
 PASSWORD = os.getenv('MYSQL_PASSWORD')
-HOST = os.getenv('MYSQL_HOST')
+HOST = os.getenv('MYSQL_HOST', 'localhost')
 PORT = os.getenv('MYSQL_PORT', '3306')
 DB = os.getenv('MYSQL_DB')
+
+
 
 DATABASE_URL = f"mysql+aiomysql://{USER}:{PASSWORD}@{HOST}:{PORT}/{DB}"
 
@@ -28,7 +30,8 @@ def get_database_schema():
         host=HOST,
         user=USER,
         password=PASSWORD,
-        database=DB
+        database=DB,
+        port=PORT
     )
     
     cursor = conn.cursor()
