@@ -1,4 +1,4 @@
-## Installation
+## README
 
 ## 1. Structure
 
