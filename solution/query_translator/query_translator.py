@@ -5,17 +5,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-def get_model():
-    if torch.cuda.is_available():
-        logger.debug('Will load LLM model %s', "defog/sqlcoder-7b-2")
-        model = get_sqlcoder()
-    else:
-        logger.debug('Will load LLM model %s', "cssupport/t5-small-awesome-text-to-sql")
-        model = get_t5_small()
-
-    return model
-
-
 def get_t5_small():
     tokenizer = T5Tokenizer.from_pretrained('t5-small')
     # Load the model
@@ -40,16 +29,23 @@ def get_sqlcoder():
 
     return "sqlcoder", model, tokenizer, None
 
+def get_model():
+    if torch.cuda.is_available():
+        logger.info('Will load LLM model %s', "defog/sqlcoder-7b-2")
+        model = get_sqlcoder()
+    else:
+        logger.info('Will load LLM model %s', "cssupport/t5-small-awesome-text-to-sql")
+        model = get_t5_small()
+
+    return model
+
+
 model_type, model, tokenizer, device = get_model()
+
 
 def generate_query_sqlcoder(model, tokenizer, question, schema):
     prompt = f"""### Task
 Generate a SQL query to answer [QUESTION]{question}[/QUESTION]
-
-### Instructions
-- If you cannot answer the question with the available database schema, return 'I do not know'
-- Remember that revenue is price multiplied by quantity
-- Remember that cost is supply_price multiplied by quantity
 
 ### Database Schema
 This query will run on a database whose schema is represented in this string:
@@ -79,18 +75,11 @@ Given the database schema, here is the SQL query that answers [QUESTION]{questio
 
 def generate_query_t5(device, model, tokenizer, question, schema):
     # Combine the schema and the user's question
-    prompt = f"""### Task
-Generate a SQL query to answer question: {question}
-
-### Database Schema
-This query will run on a database whose table name and columns are:
+    prompt = f""" Task:
+    Generate a SQL query to answer the question: {question}[/QUESTION]
+Context:
+This query will run on a database whose schema is represented in this string:
 {schema}
-where
-"quantity": number of units sold of the product in that date
-"total": amount of money due to sales of the product in a date
-"week_day": Day of the week (Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday)
-"date": date in format %m/%d/%y
-
 """
     inputs = tokenizer(prompt, padding=True, truncation=True, return_tensors="pt").to(device)
     

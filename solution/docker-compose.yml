@@ -1,63 +1,82 @@
 
 services:
   query_translator:
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
     build:
       context: ./query_translator 
-    volumes:
-      - ./query_translator:/app 
     ports:
-      - "5000:5000" 
-    environment:
-      - ENV_VAR=value 
+      - "5000:5000"  
     networks:
       - mynetwork
-
+   # runtime: nvidia  # Use the NVIDIA runtime
+  #  environment:
+   #   - NVIDIA_VISIBLE_DEVICES=all  # This allows the container to use all available GPUs  
+    volumes:
+      - ~/.cache/huggingface:/app/.cache/huggingface
+    
   mysql:
     image: mysql:8.0
     container_name: mysql_container
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: database
+      MYSQL_DATABASE: product_sales  # Ensure this database is created
       MYSQL_USER: user
       MYSQL_PASSWORD: root
     ports:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+       - ./mysql-init:/docker-entrypoint-initdb.d
     networks:
       - mynetwork
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+    
+
+  init-db:
+    image: python:3.12
+    container_name: db_initializer
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      - ./mysql-init:/mysql-init
+    working_dir: /mysql-init
+    command: ["sh", "-c", "pip install pandas mysql-connector-python sqlalchemy && python init.py"]
+    networks:
+      - mynetwork
+
 
   backend:
     build:
       context: ./backend 
-    volumes:
-      - ./backend:/app 
     ports:
-      - "5001:5000" 
+      - "8080:8080" 
     environment:
       - QUERY_TRANSLATOR_URL=http://query_translator:5000
       - MYSQL_HOST=mysql 
       - MYSQL_PORT=3306 
       - MYSQL_USER=root 
       - MYSQL_PASSWORD=root
-      - MYSQL_DB=database 
+      - MYSQL_DB=product_sales 
     networks:
       - mynetwork
     depends_on:
-      - mysql
-      - query_translator
+      init-db:
+        condition: service_completed_successfully  # Ensure backend waits for init-db to finish
+      mysql:
+        condition: service_started
+      query_translator:
+        condition: service_started
+
+
+volumes:
+  mysql_data:
 
 networks:
   mynetwork:
     driver: bridge
-
-volumes:
-  mysql_data:

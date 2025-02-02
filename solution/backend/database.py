@@ -3,13 +3,13 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 import os
 
-DB_NAME = 'database.db'
+DB_NAME = 'product_sales'
 TABLE_NAME = 'products'
 CSV_FILE = 'data/data.csv'
 
 USER = os.getenv('MYSQL_USER')
 PASSWORD = os.getenv('MYSQL_PASSWORD')
-HOST = os.getenv('MYSQL_HOST', 'localhost')
+HOST = os.getenv('MYSQL_HOST', 'mysql')
 PORT = os.getenv('MYSQL_PORT', '3306')
 DB = os.getenv('MYSQL_DB')
 

@@ -7,14 +7,19 @@ WORKDIR /app
 
 RUN mkdir query_translator
 
-COPY . /app/query_translator
+# Copy the requirements.txt first, so that Docker caches this step
+COPY ./requirements.txt /app/query_translator
 
 WORKDIR /app/query_translator
 
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-WORKDIR /app/
+COPY . /app/query_translator
 
+#ENV HF_HOME="/app/.cache/huggingface/"
+
+WORKDIR /app/
 
 EXPOSE 5000
 
