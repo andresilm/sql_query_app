@@ -67,3 +67,8 @@ Using curl on command line:
 
   ```
 
+## 4. To do
+- Prompt engineering on t5-small-sql model in order to get actually usables SQL queries
+- Make docker load the SQLCoder2 model (CUDA needed here) in order to be able to use the best of both models (this one works very well with the current prompt)
+- An actual frontend
+
