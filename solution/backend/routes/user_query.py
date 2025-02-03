@@ -59,6 +59,7 @@ async def query_sales(request: QuestionRequest, db: AsyncSession = Depends(get_d
             raise HTTPException(status_code=response.status_code, detail="Could not connect to query_translator")
 
         sql_query = response.json().get("sql_query", "Could not get SQL query")
+        logger.debug('Received SQL query: %s', sql_query)
         result = await db.execute(text(sql_query))
         results = result.fetchall()
 

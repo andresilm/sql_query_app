@@ -17,6 +17,7 @@ class T5SmallSqlWrapper(IQuerySqlTranslationModel):
 
     def question_to_sql(self, question: str, schema: str) -> str:
         prompt = "tables:\n" + "CREATE TABLE products {schema}\n" + "query for: {question}"
+
         inputs = self._tokenizer(prompt, padding=True, truncation=True, return_tensors="pt").to(self._device)
         
         # Forward pass
