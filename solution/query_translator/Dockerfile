@@ -17,7 +17,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . /app/query_translator
 
-#ENV HF_HOME="/app/.cache/huggingface/"
 
 WORKDIR /app/
 
