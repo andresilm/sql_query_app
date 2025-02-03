@@ -35,7 +35,18 @@ other services/
   - Uses environment variables to connect to the database and query translator
   - Provides a **Swagger UI** for API interaction
 
-## 2. Build and Run
+## 2. Installation
+
+### Enabling NVIDIA GPU support
+
+This is disabled by default and can be enabled by uncommenting in file docker-compose.yml:
+
+```
+#runtime: nvidia  # Use the NVIDIA runtime
+    #environment:
+    #  - NVIDIA_VISIBLE_DEVICES=all  # This allows the container to use all available GPUs  
+```
+### Build and run
 
 To build and start the project, run:
 
