@@ -35,7 +35,29 @@ other services/
   - Uses environment variables to connect to the database and query translator
   - Provides a **Swagger UI** for API interaction
 
-## 2. Build and Run
+## 2. Installation
+
+### Enabling NVIDIA GPU support
+
+This is disabled by default and can be enabled by doin these two steps:
+1. Uncommenting in file docker-compose.yml:
+
+```
+#runtime: nvidia  # Use the NVIDIA runtime
+    #environment:
+    #  - NVIDIA_VISIBLE_DEVICES=all  # This allows the container to use all available GPUs  
+```
+
+2. Comment the dependency
+```
+torch
+```
+in sql_query/requirements.txt and uncomment
+```
+#torch @ https://download.pytorch.org/whl/cu126/torch-2.6.0%2Bcu126-cp312-cp312-manylinux_2_28_x86_64.whl#sha256=6bc5b9126daa3ac1e4d920b731da9f9503ff1f56204796de124e080f5cc3570e
+
+```
+### Build and run
 
 To build and start the project, run:
 
