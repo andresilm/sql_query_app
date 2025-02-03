@@ -2,7 +2,7 @@ import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import sqlparse
 import logging
-from ..models.query_translation_model import IQuerySqlTranslationModel
+from .query_translation_model import IQuerySqlTranslationModel
 
 logger = logging.getLogger(__name__)
 
@@ -22,17 +22,21 @@ class SqlCoder2Wrapper(IQuerySqlTranslationModel):
 
     def question_to_sql(self, question: str, schema: str) -> str:
         prompt = f"""### Task
-        Generate a SQL query to answer [QUESTION]{question}[/QUESTION]
+Generate a SQL query to answer [QUESTION]{question}[/QUESTION]
 
-        ### Database Schema
-        This query will run on a database whose schema is represented in this string:
-        {schema}
+### Instructions
+- If you cannot answer the question with the available database schema, return 'I do not know'
 
-        ### Answer
-        Given the database schema, here is the SQL query that answers [QUESTION]{question}[/QUESTION]
-        [SQL]
-        """
-    
+### Database Schema
+This query will run on a database whose schema is represented in this string:
+{schema}
+
+- Do not confuse "date" which has format %m-%d-%Y with "week_day" which ranges from Monday to Friday
+
+### Answer
+Given the database schema, here is the SQL query that answers [QUESTION]{question}[/QUESTION]
+[SQL]
+"""
         inputs = self._tokenizer(prompt, return_tensors="pt").to("cuda")
         generated_ids = self._model.generate(
             **inputs,

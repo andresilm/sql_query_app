@@ -7,11 +7,12 @@ services:
       - "19500:5000"  
     networks:
       - mynetwork
-    #runtime: nvidia  # Use the NVIDIA runtime
-    #environment:
-    #  - NVIDIA_VISIBLE_DEVICES=all  # This allows the container to use all available GPUs  
+    runtime: nvidia  # Use the NVIDIA runtime
+    environment:
+     # - HF_HOME=/root/.cache/huggingface
+      - NVIDIA_VISIBLE_DEVICES=all  # This allows the container to use all available GPUs  
     volumes:
-      - ~/.cache/huggingface:/app/.cache/huggingface
+      - ~/.cache/huggingface:/root/.cache/huggingface
     
   mysql:
     image: mysql:8.0
@@ -26,7 +27,7 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-       - ./mysql-init:/docker-entrypoint-initdb.d
+      - ./mysql-init:/docker-entrypoint-initdb.d
     networks:
       - mynetwork
     healthcheck:

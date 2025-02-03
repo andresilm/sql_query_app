@@ -32,8 +32,10 @@ WHERE TABLE_NAME = 'products'
 """
             result = await db.execute(text(query))
             table_schema = result.fetchall()
-            cols_description = ",".join([f"{col[0]} {col[1]}" for col in table_schema])
-            table_schema = f'CREATE TABLE products ({cols_description})'
+            columns = ",\n".join([f'"{col[0]}" VARCHAR(100)' if col[1] == 'text' else f'"{col[0]}" INTEGER' for col in table_schema])
+            # Create table
+            table_schema = f'TABLE product (\n{columns}\n);'
+            logger.debug("Schema: %s", table_schema)
         except ProgrammingError as e:
             logger.error(f"SQL syntax error: {e}")
         except SQLAlchemyError as e:
@@ -62,8 +64,8 @@ async def query_sales(request: QuestionRequest, db: AsyncSession = Depends(get_d
         logger.debug('Received SQL query: %s', sql_query)
         result = await db.execute(text(sql_query))
         results = result.fetchall()
-
-        return {"original_question": request.question, "results": str(results)}
+        logger.debug('Query results: %s', results)
+        return {"original_question": request.question, "sql": sql_query, "results": str(results)}
 
     except ProgrammingError as e:
         logger.error(f"SQL syntax error in query '{sql_query}'")
