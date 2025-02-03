@@ -3,7 +3,7 @@ from fastapi import  FastAPI
 from .routes.query import router as user_question_router
 import logging
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 logger = logging.getLogger(__name__)
 

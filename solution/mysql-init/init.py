@@ -8,7 +8,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 CSV_FILE = "data.csv"
-PRODUCTS_TABLE_NAME = 'product'
+PRODUCT_TABLE_NAME = 'product'
 
 DB_CONFIG = {
     "host": "mysql",
@@ -33,8 +33,8 @@ def initialize_db():
     cursor.execute(f"USE {DB_CONFIG['database']}")
     
     # Create table if it doesn't exist
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS product (
+    cursor.execute(f"""
+    CREATE TABLE IF NOT EXISTS {PRODUCT_TABLE_NAME} (
         date VARCHAR(20) NOT NULL,
         week_day VARCHAR(20) NOT NULL,
         hour VARCHAR(20) NOT NULL,
@@ -48,7 +48,7 @@ def initialize_db():
     """)
     
     # Init only if the table is empty
-    cursor.execute(f"SELECT COUNT(*) FROM {PRODUCTS_TABLE_NAME}")
+    cursor.execute(f"SELECT COUNT(*) FROM {PRODUCT_TABLE_NAME}")
     row_count = cursor.fetchone()[0]
 
     if row_count == 0:
@@ -56,11 +56,11 @@ def initialize_db():
         connection_string = f"mysql+mysqlconnector://{DB_CONFIG['user']}:{DB_CONFIG['password']}@{DB_CONFIG['host']}:3306/{DB_CONFIG['database']}"
         # Create the engine
         engine = create_engine(connection_string) 
-        df.to_sql(PRODUCTS_TABLE_NAME, engine, if_exists='append', index=False)
-        logger.info(f"{len(df)} rows from {CSV_FILE} loaded into {DB_CONFIG['database']} ({PRODUCTS_TABLE_NAME})")
+        df.to_sql(PRODUCT_TABLE_NAME, engine, if_exists='append', index=False)
+        logger.info(f"{len(df)} rows from {CSV_FILE} loaded into {DB_CONFIG['database']} ({PRODUCT_TABLE_NAME})")
         engine.dispose()
     else:
-        logger.info(f"Table {PRODUCTS_TABLE_NAME} with {row_count} rows already exists in {DB_CONFIG['database']}, skipping initialization")
+        logger.info(f"Table {PRODUCT_TABLE_NAME} with {row_count} rows already exists in {DB_CONFIG['database']}, skipping initialization")
    
     # Commit and close connection
     conn.commit()

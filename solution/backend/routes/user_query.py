@@ -3,7 +3,7 @@ from pydantic import BaseModel
 import os
 import requests
 from sqlalchemy.ext.asyncio import AsyncSession
-from ..database import get_db
+from ..database import get_db, PRODUCT_TABLE_NAME
 import logging
 from sqlalchemy.exc import ProgrammingError, SQLAlchemyError
 from sqlalchemy import text
@@ -28,13 +28,13 @@ async def startup_event():
             query = f"""
 SELECT COLUMN_NAME, DATA_TYPE 
 FROM INFORMATION_SCHEMA.COLUMNS 
-WHERE TABLE_NAME = 'products'
+WHERE TABLE_NAME = '{PRODUCT_TABLE_NAME}'
 """
             result = await db.execute(text(query))
             table_schema = result.fetchall()
-            columns = ",\n".join([f'"{col[0]}" VARCHAR(100)' if col[1] == 'text' else f'"{col[0]}" INTEGER' for col in table_schema])
+            columns = ",\n".join([f'"{col[0]}" {col[1]}'  for col in table_schema])
             # Create table
-            table_schema = f'TABLE product (\n{columns}\n);'
+            table_schema = f'TABLE {PRODUCT_TABLE_NAME} (\n{columns}\n);'
             logger.debug("Schema: %s", table_schema)
         except ProgrammingError as e:
             logger.error(f"SQL syntax error: {e}")

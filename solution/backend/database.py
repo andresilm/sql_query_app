@@ -1,10 +1,9 @@
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import text
 import os
 
 DB_NAME = 'product_sales'
-TABLE_NAME = 'products'
+PRODUCT_TABLE_NAME = 'product'
 CSV_FILE = 'data/data.csv'
 
 USER = os.getenv('MYSQL_USER')
