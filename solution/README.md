@@ -10,7 +10,8 @@ The project is composed of three main services, orchestrated using Docker Compos
 project_root/
 │-- query_translator/    # Natural language to SQL translation service (LLM based)
 │-- backend/             # Main backend service
-│-- docker-compose.yml   
+│-- mysql/               # Additional service baes on offical docker image
+│-- docker-compose.yml  
 ```
 
 - **query_translator**
@@ -27,7 +28,7 @@ project_root/
 
 - **backend**
   - FastAPI application that interacts with `query_translator` and `mysql`
-  - Exposes port **5001**
+  - Exposes port **8080**
   - Uses environment variables to connect to the database and query translator
   - Provides a **Swagger UI** for API interaction
 
@@ -48,14 +49,21 @@ docker compose up --build
 
 ## 3. Use
 
+### Option A: 
 Once running, access the FastAPI **Swagger UI** to test the API:
-
 - Open your browser and go to:
   
   ```
-  http://localhost:5001/docs
+  http://localhost:8080/docs
   ```
-
 - Try out the `/ask` endpoint to send questions to the system and get the responses with data from the database
+### Option B
+Using curl on command line:
+  ```
+ curl -X POST "http://localhost:8080/db_users/query_sales" \
+     -H "accept: application/json" \
+     -H "Content-Type: application/json" \
+     -d '{"question": "What is the most bought product on Mondays?"}'
 
+  ```
 
