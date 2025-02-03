@@ -98,5 +98,6 @@ Using curl on command line:
 
   **UPDATE** Loading of  _sqlcoder-7b-2_ is actually working but is terribly slow the first time since it has to download 15 GB (it takes several minutes). On second start it just loads the model relatively quick
 
+   **UPDATE 2** With this model, the solution is answering the question of the user as expected
 - An actual frontend
 
