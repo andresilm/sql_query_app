@@ -47,6 +47,11 @@ def generate_query_sqlcoder(model, tokenizer, question, schema):
     prompt = f"""### Task
 Generate a SQL query to answer [QUESTION]{question}[/QUESTION]
 
+### Instructions
+- If you cannot answer the question with the available database schema, return 'I do not know'
+- Remember that revenue is price multiplied by quantity
+- Remember that cost is supply_price multiplied by quantity
+
 ### Database Schema
 This query will run on a database whose schema is represented in this string:
 {schema}
@@ -75,11 +80,21 @@ Given the database schema, here is the SQL query that answers [QUESTION]{questio
 
 def generate_query_t5(device, model, tokenizer, question, schema):
     # Combine the schema and the user's question
-    prompt = f""" Task:
-    Generate a SQL query to answer the question: {question}[/QUESTION]
-Context:
+    prompt = f"""### Task
+Generate a SQL query to answer [QUESTION]{question}[/QUESTION]
+
+### Instructions
+- If you cannot answer the question with the available database schema, return 'I do not know'
+- Remember that revenue is price multiplied by quantity
+- Remember that cost is supply_price multiplied by quantity
+
+### Database Schema
 This query will run on a database whose schema is represented in this string:
 {schema}
+
+### Answer
+Given the database schema, here is the SQL query that answers [QUESTION]{question}[/QUESTION]
+[SQL]
 """
     inputs = tokenizer(prompt, padding=True, truncation=True, return_tensors="pt").to(device)
     

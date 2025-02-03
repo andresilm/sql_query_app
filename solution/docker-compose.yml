@@ -7,9 +7,9 @@ services:
       - "5000:5000"  
     networks:
       - mynetwork
-   # runtime: nvidia  # Use the NVIDIA runtime
-  #  environment:
-   #   - NVIDIA_VISIBLE_DEVICES=all  # This allows the container to use all available GPUs  
+    #runtime: nvidia  # Use the NVIDIA runtime
+    #environment:
+    #  - NVIDIA_VISIBLE_DEVICES=all  # This allows the container to use all available GPUs  
     volumes:
       - ~/.cache/huggingface:/app/.cache/huggingface
     
