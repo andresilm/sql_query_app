@@ -49,15 +49,15 @@ docker compose up --build
 
 ## 3. Use
 
-### Option A: 
+### Option A: Swagger UI
 Once running, access the FastAPI **Swagger UI** to test the API:
 - Open your browser and go to:
   
   ```
   http://localhost:8080/docs
   ```
-- Try out the `/ask` endpoint to send questions to the system and get the responses with data from the database
-### Option B
+- Try out the `/db_users/query_sales` endpoint to send questions to the system and get the responses with data from the database
+### Option B: CLI
 Using curl on command line:
   ```
  curl -X POST "http://localhost:8080/db_users/query_sales" \
