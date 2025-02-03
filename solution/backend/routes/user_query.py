@@ -32,8 +32,8 @@ WHERE TABLE_NAME = 'products'
 """
             result = await db.execute(text(query))
             table_schema = result.fetchall()
-            cols_description = "\n".join([f"column_name:{col[0]}, column_type:{col[1]}" for col in table_schema])
-            table_schema = f'Table products: {cols_description}'
+            cols_description = ",".join([f"{col[0]} {col[1]}" for col in table_schema])
+            table_schema = f'CREATE TABLE products ({cols_description})'
         except ProgrammingError as e:
             logger.error(f"SQL syntax error: {e}")
         except SQLAlchemyError as e:
@@ -58,15 +58,15 @@ async def query_sales(request: QuestionRequest, db: AsyncSession = Depends(get_d
             logger.debug(f"Received status code %d", response.status_code)
             raise HTTPException(status_code=response.status_code, detail="Could not connect to query_translator")
 
-        sql_query = response.json().get("translated_query", "Could not get SQL query")
+        sql_query = response.json().get("sql_query", "Could not get SQL query")
         result = await db.execute(text(sql_query))
         results = result.fetchall()
 
         return {"original_question": request.question, "results": str(results)}
 
     except ProgrammingError as e:
-        logger.error(f"SQL syntax error: {e}")
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="SQL syntax error")
+        logger.error(f"SQL syntax error in query '{sql_query}'")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Bad SQL query")
     except SQLAlchemyError as e:
         logger.error(f"Database error: {e}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Database error")

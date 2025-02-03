@@ -4,7 +4,7 @@ services:
     build:
       context: ./query_translator 
     ports:
-      - "5000:5000"  
+      - "19500:5000"  
     networks:
       - mynetwork
     #runtime: nvidia  # Use the NVIDIA runtime

@@ -16,19 +16,7 @@ class T5SmallSqlWrapper(IQuerySqlTranslationModel):
         self._model.eval()
 
     def question_to_sql(self, question: str, schema: str) -> str:
-        # Combine the schema and the user's question
-        prompt = f""" Task:
-        Generate a SQL query to answer the question: {question}[/QUESTION]
-    Context:
-    This query will run on a database whose schema is represented in this string:
-    {schema}
-    """
-        
-        prompt = """
-    " Generate a SQL query to answer the question: {question} 
-      given that database has the following tables: {schema}"
-
-"""
+        prompt = "tables:\n" + "CREATE TABLE products {schema}\n" + "query for: {question}"
         inputs = self._tokenizer(prompt, padding=True, truncation=True, return_tensors="pt").to(self._device)
         
         # Forward pass
