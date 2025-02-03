@@ -3,10 +3,12 @@ import mysql.connector
 from sqlalchemy import create_engine
 import logging
 
+logging.basicConfig(level=logging.INFO)
+
 logger = logging.getLogger(__name__)
 
 CSV_FILE = "data.csv"
-PRODUCTS_TABLE_NAME = 'products'
+PRODUCTS_TABLE_NAME = 'product'
 
 DB_CONFIG = {
     "host": "mysql",
@@ -33,33 +35,37 @@ def initialize_db():
     # Create table if it doesn't exist
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS product (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        date DATE NOT NULL,
+        date VARCHAR(20) NOT NULL,
         week_day VARCHAR(20) NOT NULL,
-        hour TIME NOT NULL,
-        ticket_number INT NOT NULL,
+        hour VARCHAR(20) NOT NULL,
+        ticket_number VARCHAR(20) NOT NULL,
         waiter VARCHAR(100) NOT NULL,
-        product_name VARCHAR(255) NOT NULL,
+        product_name VARCHAR(100) NOT NULL,
         quantity INT NOT NULL,
         unitary_price DECIMAL(10, 2) NOT NULL,
-        total DECIMAL(10, 2) NOT NULL
+        total INT NOT NULL
     );
     """)
+    
+    # Init only if the table is empty
+    cursor.execute(f"SELECT COUNT(*) FROM {PRODUCTS_TABLE_NAME}")
+    row_count = cursor.fetchone()[0]
 
-    df = pd.read_csv(CSV_FILE)
-    connection_string = f"mysql+mysqlconnector://{DB_CONFIG['user']}:{DB_CONFIG['password']}@{DB_CONFIG['host']}:3306/{DB_CONFIG['database']}"
-    # Create the engine
-    engine = create_engine(connection_string) 
-    try:
-        df.to_sql(PRODUCTS_TABLE_NAME, engine, if_exists='fail', index=False)
-    except ValueError:
-        logger.error(f"Table {PRODUCTS_TABLE_NAME} already exists in {DB_CONFIG['database']}, skipping initialization")
-        
+    if row_count == 0:
+        df = pd.read_csv(CSV_FILE)
+        connection_string = f"mysql+mysqlconnector://{DB_CONFIG['user']}:{DB_CONFIG['password']}@{DB_CONFIG['host']}:3306/{DB_CONFIG['database']}"
+        # Create the engine
+        engine = create_engine(connection_string) 
+        df.to_sql(PRODUCTS_TABLE_NAME, engine, if_exists='append', index=False)
+        logger.info(f"{len(df)} rows from {CSV_FILE} loaded into {DB_CONFIG['database']} ({PRODUCTS_TABLE_NAME})")
+        engine.dispose()
+    else:
+        logger.info(f"Table {PRODUCTS_TABLE_NAME} with {row_count} rows already exists in {DB_CONFIG['database']}, skipping initialization")
+   
     # Commit and close connection
     conn.commit()
     conn.close()
     
-    logger.info(f"{len(df)} rows from {CSV_FILE} successfully loaded into {DB_CONFIG['database']} ({PRODUCTS_TABLE_NAME})")
 
 if __name__ == "__main__":
     initialize_db()

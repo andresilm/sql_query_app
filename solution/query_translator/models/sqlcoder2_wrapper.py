@@ -9,10 +9,9 @@ logger = logging.getLogger(__name__)
 
 class SqlCoder2Wrapper(IQuerySqlTranslationModel):
     def __init__(self):
-        self._tokenizer = AutoTokenizer.from_pretrained("defog/sqlcoder-7b-2")
-
-        # load in 4 bits – this is way slower
         logger.info("Loading SQLCoder2 model")
+        self._tokenizer = AutoTokenizer.from_pretrained("defog/sqlcoder-7b-2")
+        # load in 4 bits – this is way slower
         self._model = AutoModelForCausalLM.from_pretrained(
             "defog/sqlcoder-7b-2",
             trust_remote_code=True,
