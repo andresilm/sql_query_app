@@ -95,6 +95,8 @@ Using curl on command line:
 ## 4. Known issues & to do
 - Prompt engineering on _t5-small-awesome-text-to-sql_ model in order to get actually usables SQL queries
 - Make docker load the _sqlcoder-7b-2_ model (CUDA needed here) in order to be able to use the best of both models (this one works very well with the current prompt)
-  **UPDATE** Loading of  _sqlcoder-7b-2_ is actually working but is terribly slow (several minutes)
+
+  **UPDATE** Loading of  _sqlcoder-7b-2_ is actually working but is terribly slow the first time since it has to download 15 GB (it takes several minutes). On second start it just loads the model relatively quick
+
 - An actual frontend
 
