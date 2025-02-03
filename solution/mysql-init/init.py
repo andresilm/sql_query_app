@@ -1,6 +1,9 @@
 import pandas as pd
 import mysql.connector
 from sqlalchemy import create_engine
+import logging
+
+logger = logging.getLogger(__name__)
 
 CSV_FILE = "data.csv"
 PRODUCTS_TABLE_NAME = 'products'
@@ -47,12 +50,16 @@ def initialize_db():
     connection_string = f"mysql+mysqlconnector://{DB_CONFIG['user']}:{DB_CONFIG['password']}@{DB_CONFIG['host']}:3306/{DB_CONFIG['database']}"
     # Create the engine
     engine = create_engine(connection_string) 
-    df.to_sql(PRODUCTS_TABLE_NAME, engine, if_exists='append', index=False)
+    try:
+        df.to_sql(PRODUCTS_TABLE_NAME, engine, if_exists='fail', index=False)
+    except ValueError:
+        logger.error(f"Table {PRODUCTS_TABLE_NAME} already exists in {DB_CONFIG['database']}, skipping initialization")
+        
     # Commit and close connection
     conn.commit()
     conn.close()
     
-    print(f"{len(df)} rows from {CSV_FILE} successfully loaded into {DB_CONFIG['database']} ({PRODUCTS_TABLE_NAME})")
+    logger.info(f"{len(df)} rows from {CSV_FILE} successfully loaded into {DB_CONFIG['database']} ({PRODUCTS_TABLE_NAME})")
 
 if __name__ == "__main__":
     initialize_db()

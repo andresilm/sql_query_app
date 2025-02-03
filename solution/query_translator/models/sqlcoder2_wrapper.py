@@ -12,6 +12,7 @@ class SqlCoder2Wrapper(IQuerySqlTranslationModel):
         self._tokenizer = AutoTokenizer.from_pretrained("defog/sqlcoder-7b-2")
 
         # load in 4 bits – this is way slower
+        logger.info("Loading SQLCoder2 model")
         self._model = AutoModelForCausalLM.from_pretrained(
             "defog/sqlcoder-7b-2",
             trust_remote_code=True,
@@ -19,6 +20,8 @@ class SqlCoder2Wrapper(IQuerySqlTranslationModel):
             device_map="auto",
             use_cache=True,
         )
+        logger.info("[DONE] Loading SQLCoder2 model")
+
 
     def question_to_sql(self, question: str, schema: str) -> str:
         prompt = f"""### Task
@@ -30,7 +33,7 @@ Generate a SQL query to answer [QUESTION]{question}[/QUESTION]
 ### Database Schema
 This query will run on a database whose schema is represented in this string:
 {schema}
-
+- When using the name of the table or columns, respect the singular or plural as it appears in the schema 
 - Do not confuse "date" which has format %m-%d-%Y with "week_day" which ranges from Monday to Friday
 
 ### Answer
