@@ -10,8 +10,11 @@ The project is composed of three main services, orchestrated using Docker Compos
 project_root/
 │-- query_translator/    # Natural language to SQL translation service (LLM based)
 │-- backend/             # Main backend service
-│-- mysql/               # Additional service baes on offical docker image
-│-- docker-compose.yml  
+│-- init-db/             # Initializes database of mysql service
+│-- docker-compose.yml
+
+other services/
+│-- mysql/               # Additional service based on offical docker image
 ```
 
 - **query_translator**
